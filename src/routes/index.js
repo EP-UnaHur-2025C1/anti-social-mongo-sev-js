@@ -1,5 +1,14 @@
 const userRoute = require("./user.route");
 const postRoute = require("./post.route");
 const tagRoute = require("./tag.route");
+const postImageRoute = require("./postImage.route");
+const followRoute = require("./follow.route");
 
-module.exports = { userRoute, postRoute, tagRoute };
+
+module.exports = { 
+    userRoute,
+    postImageRoute,
+    postRoute,
+    tagRoute,
+    followRoute
+};
