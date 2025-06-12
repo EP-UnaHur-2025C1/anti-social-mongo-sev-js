@@ -7,11 +7,17 @@ const PORT = process.env.PORT || 3000;
 
 //Rutas
 const { postImageRoute } = require("./routes");
+const { userRoute } = require("./routes");
 
 conectarDB();
 
 app.use(express.json());
+//solo para probar
+app.get("/", (req, res) => {
+  res.send("API funcionando");
+});
 
+app.use("/users", userRoute);
 app.use("/postimages", postImageRoute);
 
 app.listen(PORT, () => {
