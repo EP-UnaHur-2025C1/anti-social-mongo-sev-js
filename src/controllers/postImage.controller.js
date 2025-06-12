@@ -1,7 +1,6 @@
 const PostImage = require('../models/postImage')
 const { saveImage, deleteImage } = require('../aditionalFunctions/image')
 
-
 const getAllPostImages = async (req, res) => {
   try {
     const images = await PostImage.find({});
