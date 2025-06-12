@@ -1,0 +1,22 @@
+[
+  {
+    "followerId": 1,
+    "followedId": 2
+  },
+  {
+    "followerId": 1,
+    "followedId": 3
+  },
+  {
+    "followerId": 2,
+    "followedId": 1
+  },
+  {
+    "followerId": 4,
+    "followedId": 3
+  },
+  {
+    "followerId": 2,
+    "followedId": 4
+  }
+]

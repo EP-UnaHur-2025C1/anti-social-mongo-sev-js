@@ -9,6 +9,7 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "userId es requerido"],
     },
+
     description: {
       type: String,
       required: [true, "La descripción es requerida"],
@@ -32,6 +33,10 @@ const postSchema = new mongoose.Schema(
     collection: "posts",
   }
 );
+
+//virtuals para relación n:m entre post-tag
+postSchema.set("toJSON", { virtuals: true });
+postSchema.set("toObject", { virtuals: true });
 
 const Post = mongoose.model("Post", postSchema);
 module.exports = Post;
