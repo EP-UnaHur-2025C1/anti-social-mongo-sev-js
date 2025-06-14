@@ -1,4 +1,4 @@
-const { Follow, User } = require("../db/models");
+const { Follow, User } = require("../models");
 
 const getFollowers = async (req, res) => {
   try {

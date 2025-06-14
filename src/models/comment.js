@@ -22,6 +22,12 @@ const commentSchema = new mongoose.Schema(
         message: (props) => `El texto no puede estar vacío`,
       },
     },
+
+    visible: { 
+      type: Boolean,
+      default: true
+    },
+    
     createdAt: {
       type: Date,
       default: Date.now,
@@ -33,4 +39,4 @@ const commentSchema = new mongoose.Schema(
 );
 
 const Comment = mongoose.model("Comment", commentSchema);
-module.exports = Comment;
+module.exports = Comment ;

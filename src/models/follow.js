@@ -25,4 +25,4 @@ const followSchema = new mongoose.Schema(
 );
 
 const Follow = mongoose.model("Follow", followSchema);
-module.exports = Follow;
+module.exports =  Follow ;

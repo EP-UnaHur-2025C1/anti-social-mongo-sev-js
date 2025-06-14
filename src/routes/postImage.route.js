@@ -26,4 +26,4 @@ router.delete("/:id",
 );
 
 
-module.exports = router;
+module.exports = { router };

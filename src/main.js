@@ -7,7 +7,8 @@ const PORT = process.env.PORT || 3000;
 
 //Rutas
 const { 
-  userRoute, 
+  userRoute,
+  commentRoute,
   postRoute,
   tagRoute,
   postImageRoute, 
@@ -19,10 +20,12 @@ conectarDB();
 app.use(express.json());
 
 app.use("/users", userRoute);
+app.use("/comments", commentRoute);
 app.use("/posts", postRoute);
 app.use("/tags", tagRoute);
 app.use("/postimages", postImageRoute);
 app.use("/follows", followRoute);
+
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
