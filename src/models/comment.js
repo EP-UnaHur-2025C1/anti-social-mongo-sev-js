@@ -5,7 +5,7 @@ const validator = require("validator");
 const commentSchema = new mongoose.Schema(
   {
     postId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId, //agregue 
       ref: "Post",
       required: [true, "PostId es requerido"],
     },

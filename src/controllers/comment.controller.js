@@ -7,7 +7,11 @@ const Post = require("../models/post");
 
 const createComment = async (req, res) => {
     try {
-        const newComment = new Comment(req.body);
+        const { userId } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(req.body.postId)) {
+        return res.status(400).json({ error: 'postId no es un ObjectId válido' });
+        }
+        const newComment = new Comment(req.body, userId);
         await newComment.save();
         res.status(201).json(newComment);
     } catch (error) {
