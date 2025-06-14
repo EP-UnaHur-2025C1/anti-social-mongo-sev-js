@@ -22,6 +22,11 @@ const commentSchema = new mongoose.Schema(
         message: (props) => `El texto no puede estar vacío`,
       },
     },
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+
     createdAt: {
       type: Date,
       default: Date.now,
