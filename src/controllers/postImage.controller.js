@@ -3,7 +3,7 @@ const { saveImage, deleteImage } = require('../aditionalFunctions/image')
 
 const getAllPostImages = async (req, res) => {
   try {
-    const images = await PostImage.find({});
+    const images = await PostImage.find({}).select('-__v');
     res.status(200).json(images);
   } catch(e) {
     res.status(500).json({message: "Ocurrió un error en el servidor", error: e.message})
@@ -22,7 +22,7 @@ const createPostImages = async (req, res) => {
       }));
       const createdImages = await PostImage.create(newImages);
 
-      res.status(201).json(createdImages);
+      res.status(201).json(postId);
     } catch(e) {
       res.status(500).json({message: "Ocurrió un error en el servidor", error: e.message})
     }
@@ -35,7 +35,7 @@ const updatePostImage = async (req, res) => {
       saveImage(req.file)
       const image = await PostImage.findOneAndUpdate({_id: id}, {$set: {imageUrl: req.file.destination + req.file.originalname}}, { runValidators: true })
       deleteImage(image.imageUrl)
-      res.status(201).json(image);
+      res.status(201).json(id);
     } catch(e) {
       res.status(500).json({message: "Ocurrió un error en el servidor", error: e.message})
     }
