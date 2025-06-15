@@ -14,7 +14,7 @@ const getUsers = async (_, res) => {
 const getUserById = async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await User.findById(id);
+    const user = await User.findById(id).select("userName email");
     if (!user) {
       return res.status(404).json({ message: "Usuario inexistente" });
     }

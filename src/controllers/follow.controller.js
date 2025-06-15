@@ -1,4 +1,5 @@
-const { Follow, User } = require("../models/follow");
+const { Follow } = require("../models/follow");
+const { User } = require("../models/user");
 
 const getFollowers = async (req, res) => {
   try {

@@ -3,7 +3,7 @@ const { saveImage, deleteImage } = require("../aditionalFunctions/image");
 
 const getAllPostImages = async (req, res) => {
   try {
-    const images = await PostImage.find({});
+    const images = await PostImage.find({}).select("-__v");
     res.status(200).json(images);
   } catch (e) {
     res
