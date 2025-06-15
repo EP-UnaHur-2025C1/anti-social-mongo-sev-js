@@ -8,11 +8,11 @@ const PORT = process.env.PORT || 3000;
 //Rutas
 const { 
   userRoute,
-  commentRoute,
   postRoute,
   tagRoute,
   postImageRoute, 
-  followRoute 
+  followRoute,
+  commentRoute
 } = require("./routes");
 
 conectarDB();
@@ -20,11 +20,11 @@ conectarDB();
 app.use(express.json());
 
 app.use("/users", userRoute);
-app.use("/comments", commentRoute);
 app.use("/posts", postRoute);
 app.use("/tags", tagRoute);
 app.use("/postimages", postImageRoute);
 app.use("/follows", followRoute);
+app.use("/comments", commentRoute);
 
 
 app.listen(PORT, () => {

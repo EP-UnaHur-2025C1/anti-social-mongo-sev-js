@@ -11,7 +11,7 @@ const createComment = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(req.body.postId)) {
         return res.status(400).json({ error: 'postId no es un ObjectId válido' });
         }
-        const newComment = new Comment(req.body, userId);
+        const newComment =  new Comment(req.body, userId);
         await newComment.save();
         res.status(201).json(newComment);
     } catch (error) {
@@ -36,15 +36,19 @@ const getComments = async(req, res) => {
 //Obtener un comentario por id
 
 const getCommentById = async (req, res) => {
-    try {
-        const comment = await Comment.findByid(req.params.id).populate("userId", "userName");
-        if(!comment) return res.status(404).json({error: "Comentario no encontrado"});
-            res.json(comment);
-    } catch (error) {
-        res.status(500).json({error: error.message});
-        
+try {
+    
+    const comment = await Comment.findById(id).populate("userId", "userName");
+    if (!comment) {
+    return res.status(404).json({ error: "Comentario no encontrado" });
     }
+
+    res.json(comment);
+} catch (error) {
+    res.status(500).json({ error: error.message });
 }
+};
+
 
 
 // Obtener comentarios de un post (solo los visibles)
@@ -83,4 +87,4 @@ const deleteComment = async (req, res) => {
     }
 };
 
-module.exports = { createComment, getCommentById, getCommentsByPost, updateComment, deleteComment };
+module.exports = { createComment, getComments, getCommentById, getCommentsByPost, updateComment, deleteComment };
