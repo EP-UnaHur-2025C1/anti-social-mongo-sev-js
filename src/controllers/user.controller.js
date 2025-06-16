@@ -4,7 +4,7 @@ const Comment = require("../models/comment");
 
 const getUsers = async (_, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select('userName email');
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -23,10 +23,10 @@ const getUserById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const createUser = async (req, res) => {
   try {
-    const { userName, email } = req.body;
-    //para manejar si el user ya existe
+    const { userName } = req.body;
     const existingUser = await User.findOne({ userName });
     if (existingUser) {
       return res
@@ -40,6 +40,7 @@ const createUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
@@ -56,6 +57,7 @@ const updateUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const deleteById = async (req, res) => {
   try {
     const userId = req.params.id;

@@ -2,9 +2,8 @@ const { Router } = require("express");
 const router = Router();
 const { postImageController } = require("../controllers");
 const { fileFilter } = require('../aditionalFunctions/image')
-
-
 const multer = require('multer')
+
 const upload = multer ({ dest: 'uploads/', fileFilter, limits: { fileSize: 1024 * 1024 * 4 }})
 
 router.get("/", 

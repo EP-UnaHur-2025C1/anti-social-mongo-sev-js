@@ -1,5 +1,5 @@
-const { Follow } = require("../models/follow");
-const { User } = require("../models/user");
+const Follow = require("../models/follow");
+const User = require("../models/user");
 
 const getFollowers = async (req, res) => {
   try {
@@ -23,7 +23,8 @@ const getFollowers = async (req, res) => {
 
 const getFollowing = async (req, res) => {
   try {
-    const { userId } = req.params; // id del usuario que queremos saber a quienes sigue
+    const { userId } = req.params; 
+
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "ID inválido" });
     }
@@ -74,22 +75,11 @@ const createFollow = async (req, res) => {
 const deleteFollow = async (req, res) => {
   try {
     const { follower, followed } = req.params;
-    const follow = await Follow.findOne({
-      followerId: follower,
-      followedId: followed,
-    });
-    const idFollower = await User.findOne({ followerId: follower }).select(
-      "_id"
-    );
-    const idFollowed = await User.findOne({ followedId: followed }).select(
-      "_id"
-    );
+    const follow = await Follow.findOneAndDelete({ followerId: follower, followedId: followed });
 
     if (!follow) {
       return res.status(404).json({ message: "Solicitud Incorrecta" });
     }
-    follow.users.pull({ idFollower, idFollowed });
-    await follow.save();
     res.status(200).json({ message: "Se dejó de seguir al usuario" });
   } catch (e) {
     console.error(e);
