@@ -70,15 +70,17 @@ const createPost = async (req, res) => {
     if (req.files) {
         req.files.map(file => saveImage(file))
         const imageRecords = req.files.map((file) => ({
-          postId: newPost.id,
+          postId: newPost._id,
           imageUrl: file.destination + file.originalname, 
         }));
-        await PostImage.create(imageRecords);
+        await PostImage.create(imageRecords)
+        const idImages = await PostImage.find({postId: newPost._id}).select('_id')
+        await Post.updateOne({_id: newPost._id}, {$set: {images: idImages}})
     }
-    
-    const postWithImages = await Post.findById(newPost.id)
-          .select('-__v')
-          .populate('images', 'imageUrl');
+
+    const postWithImages = await Post.find({_id: newPost._id})
+        .select('-__v')
+
     res.status(201).json(postWithImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -115,6 +117,8 @@ const updatePost = async (req, res) => {
         postId: id,
       }));
       await PostImage.create(postImages);
+      const idImages = await PostImage.find({postId: post._id}).select('_id')
+      await Post.updateOne({_id: post._id}, {$set: {images: idImages}})
     }
     res.status(200).json(post);
   } catch (error) {
@@ -148,8 +152,10 @@ const deletePostImage = async (req, res) => {
       if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(imageId)) {
         return res.status(400).json({ message: "ID inválido" });
       }
-
       await PostImage.findOneAndDelete({ postId: id, _id: imageId });
+      const post = await Post.findById(id)
+      post.images.pull(imageId);
+      await post.save();
 
       res.status(200).json({ message: "Imagen eliminada correctamente" });
     } catch(e) {
@@ -161,7 +167,7 @@ const updatePostImagesById = async (req, res) => {
   try {
     const { id } = req.params 
 
-    const postImages = await Post.findById(id).select("images")
+    const postImages = await Post.findById(id).select('images')
 
     req.files.map(file => saveImage(file))
     const imagesRecords = req.files.map((file) => ({
@@ -170,6 +176,10 @@ const updatePostImagesById = async (req, res) => {
     }));
     await PostImage.deleteMany({ postId: id })
     await PostImage.create(imagesRecords)
+
+    const idImages = await PostImage.find({postId: id}).select('_id')
+    await Post.updateOne({_id: id}, {$set: {images: idImages}})
+
       res
         .status(201)
         .json({ message: `Imagenes actualizadas correctamente ${postImages}` });
