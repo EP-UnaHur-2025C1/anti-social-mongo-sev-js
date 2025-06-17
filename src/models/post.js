@@ -28,7 +28,7 @@ const postSchema = new mongoose.Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "PostImage",
-      }
+      },
     ],
     createdAt: {
       type: Date,
@@ -39,6 +39,13 @@ const postSchema = new mongoose.Schema(
     collection: "posts",
   }
 );
+//virtual para poder recibir muchos comentarios
+postSchema.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "postId",
+  justOne: false,
+});
 
 //virtuals para relación n:m entre post-tag
 postSchema.set("toJSON", { virtuals: true });
