@@ -906,3 +906,145 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorServer"
+  /tags:
+    get:
+      summary: Obtener todos los tags
+      tags:
+        - Tag
+      responses:
+        "200":
+          description: Lista de tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+
+    post:
+      summary: Crear un tag nuevo
+      tags:
+        - Tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "nuevo"
+      responses:
+        "201":
+          description: Tag creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "400":
+          description: Error de validación o datos incorrectos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflicto, recurso ya existe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+  /tags/{id}:
+    put:
+      summary: Actualizar un tag por ID
+      tags:
+        - Tag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "60c72b2f9b1d8e3a5c8d9876"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "actualizado"
+      responses:
+        "200":
+          description: Tag actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "400":
+          description: Error de validación o datos incorrectos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Tag no encontrado o ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+    delete:
+      summary: Eliminar un tag por ID (y quitar referencias en posts)
+      tags:
+        - Tag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "60c72b2f9b1d8e3a5c8d9876"
+      responses:
+        "200":
+          description: Tag y referencias eliminadas correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "404":
+          description: Tag no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
