@@ -4,7 +4,7 @@ const Comment = require("../models/comment");
 
 const getUsers = async (_, res) => {
   try {
-    const users = await User.find().select('userName email');
+    const users = await User.find().select('userName email "-__V"').lean();
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -14,7 +14,7 @@ const getUsers = async (_, res) => {
 const getUserById = async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await User.findById(id).select("userName email");
+    const user = await User.findById(id).select('userName email "-__V"').lean();
     if (!user) {
       return res.status(404).json({ message: "Usuario inexistente" });
     }
