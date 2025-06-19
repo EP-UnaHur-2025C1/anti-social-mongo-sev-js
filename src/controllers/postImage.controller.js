@@ -30,12 +30,13 @@ const createPostImages = async (req, res) => {
       req.files.map(file => saveImage(file))
 
       const newImages = req.files.map((file) => ({
-        imageUrl: file.destination + file.originalname, 
         postId,
+        imageUrl: file.destination + file.originalname, 
       }));
-      await PostImage.create(newImages) 
-      const idImages = await PostImage.find({postId}).select('_id')
-      await Post.updateOne({_id: postId}, {$push: {images: idImages}})
+
+      const createdImages = await PostImage.create(newImages); 
+      post.images.push(createdImages.map((img) => img._id))
+      await post.save()
       res.status(201).json(post);
     } catch(e) {
       res.status(500).json({message: "Ocurrió un error en el servidor", error: e.message})
@@ -50,12 +51,17 @@ const updatePostImage = async (req, res) => {
         return res.status(400).json({ message: "ID inválido" });
       }
 
-      saveImage(req.file)
-      const image = await PostImage.findOneAndUpdate({_id: id}, {$set: {imageUrl: req.file.destination + req.file.originalname}}, { runValidators: true })
-      deleteImage(image.imageUrl)
-      const imageId = await PostImage.findById(id).select('id')
-      await Post.updateOne({_id: id}, {$push: {images: imageId}})
-      res.status(201).json({message: "Imagen actualizada correctamente"});
+      const image = await PostImage.findById(id)
+      deleteImage(image.imageUrl.toString()); // Borro la imagen anterior de la carpeta uploads
+      image.imageUrl = req.file.destination + req.file.originalname // Actualizo la url por la nueva
+      image.save()
+      saveImage(req.file)  // Guardo la nueva imagen en la carpeta uploads
+      const post =  await Post.findById(image.postId);
+
+      post.images.pull(id)   // Quito la imagen anterior del array en post
+      post.images.push(image._id)   // Agrego la imagen nueva al array en post
+      await post.save()
+      res.status(201).json({message: `Imagen actualizada correctamente ${image.imageUrl}`});
     } catch(e) {
       res.status(500).json({message: "Ocurrió un error en el servidor", error: e.message})
     }
@@ -63,15 +69,18 @@ const updatePostImage = async (req, res) => {
 
 const deleteById = async (req, res) => {
     try { 
-      const { id } = req.params;
+      const { postId, id } = req.params;
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "ID inválido" });
       }
 
-      const data = await PostImage.findOneAndDelete({_id: id}).select('postId -_id');
-      // Hay que eliminar del array de images en post la imagen borrada
-      res.status(200).json(data);
+      const oldImage = await PostImage.findOneAndDelete({_id: id});
+      const post = await Post.findById(postId);
+      deleteImage(oldImage.imageUrl.toString());
+      post.images.pull(id)
+      await post.save()
+      res.status(200).json("Imagen eliminada correctamente", post);
     } catch(e) {
       res.status(500).json({message: "Ocurrió un error en el servidor", error: e.message})
     }

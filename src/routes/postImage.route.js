@@ -20,7 +20,7 @@ router.put("/:id",
     postImageController.updatePostImage
 );
 
-router.delete("/:id", 
+router.delete("/:postId/:id", 
     postImageController.deleteById
 );
 

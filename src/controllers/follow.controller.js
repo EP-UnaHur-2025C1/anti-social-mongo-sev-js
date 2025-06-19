@@ -1,5 +1,6 @@
 const Follow = require("../models/follow");
 const User = require("../models/user");
+const mongoose = require("mongoose");
 
 const getFollowers = async (req, res) => {
   try {
@@ -10,7 +11,12 @@ const getFollowers = async (req, res) => {
 
     const user = await User.findById(userId)
       .select("userName")
-      .populate("followers");
+      .populate({
+        path: "follower",
+        select: "followerId -followedId -_id",
+        populate: { path: "followerId", select:"userName" }
+      });
+
     if (!user) {
       return res.status(404).json({ message: "Usuario inexistente" });
     }
@@ -31,7 +37,12 @@ const getFollowing = async (req, res) => {
 
     const user = await User.findById(userId)
       .select("userName")
-      .populate("followed");
+      .populate({
+        path: "followed",
+        select: "followedId -followerId -_id",
+        populate: { path: "followedId", select:"userName" }
+      });
+
     if (!user) {
       return res.status(404).json({ message: "Usuario inexistente" });
     }
