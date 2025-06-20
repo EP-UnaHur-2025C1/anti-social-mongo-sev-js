@@ -17,9 +17,7 @@ const getPosts = async (req, res) => {
 const getPostById = async (req, res) => {
   try {
     const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
+    //eliminé validación de id, ahora la hace el middleware
 
     const post = await Post.findById(id)
       .populate("userId", " userName email")
@@ -58,9 +56,7 @@ const createPost = async (req, res) => {
 const updatePost = async (req, res) => {
   try {
     const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
+    //eliminé validación de id, ahora la hace el middleware
     const { description, userId, tags } = req.body;
 
     if (!description || !userId) {
@@ -84,9 +80,7 @@ const updatePost = async (req, res) => {
 const deleteById = async (req, res) => {
   try {
     const postId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
+    //eliminé validación de id, ahora la hace el middleware
 
     const post = await Post.findById(postId);
     if (!post) {

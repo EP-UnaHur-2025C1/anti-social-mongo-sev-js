@@ -3,9 +3,7 @@ const { Follow, User } = require("../models");
 const getFollowers = async (req, res) => {
   try {
     const { userId } = req.params; 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: 'ID inválido' });
-    }
+    //eliminé validación de id, ahora la hace el middleware
 
     const user = await User.findById(userId).select('userName').populate('followers');
     if (!user) {
@@ -21,9 +19,7 @@ const getFollowers = async (req, res) => {
 const getFollowing = async (req, res) => {
   try {
     const { userId } = req.params; // id del usuario que queremos saber a quienes sigue
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: 'ID inválido' });
-    }
+    //eliminé validación de id, ahora la hace el middleware
 
     const user = await User.findById(userId).select('userName').populate('followed');
     if (!user) {

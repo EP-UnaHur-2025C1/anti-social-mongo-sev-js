@@ -4,6 +4,7 @@ const { postImageController } = require("../controllers");
 const { fileFilter } = require('../aditionalFunctions/image')
 
 
+
 const multer = require('multer')
 const upload = multer ({ dest: 'uploads/', fileFilter, limits: { fileSize: 1024 * 1024 * 4 }})
 
@@ -16,12 +17,12 @@ router.post("/",
     postImageController.createPostImages
 );
 
-router.put("/:id", 
+router.put("/:id",
     upload.single('image'),
     postImageController.updatePostImage
 );
 
-router.delete("/:id", 
+router.delete("/:id",
     postImageController.deleteById
 );
 
