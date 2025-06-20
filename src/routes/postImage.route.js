@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const { postImageController } = require("../controllers");
 const { fileFilter } = require('../aditionalFunctions/image')
+const validarObjectId = require('../middlewares/validatorObjectId');
 
 
 
@@ -18,12 +19,12 @@ router.post("/",
 );
 
 router.put("/:id",
-    upload.single('image'),
+    upload.single('image'), validarObjectId,
     postImageController.updatePostImage
 );
 
 router.delete("/:id",
-    postImageController.deleteById
+    validarObjectId, postImageController.deleteById
 );
 
 
