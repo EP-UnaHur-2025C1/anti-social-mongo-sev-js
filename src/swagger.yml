@@ -82,13 +82,16 @@ components:
       properties:
         _id:
           type: string
-          example: "60c72b2f9b1d8e3a5c8d8765"
-        imageUrl:
-          type: string
-          example: "/uploads/imagen1.jpg"
+          example: "6650fbd6e5c4f2b3c24c2d11"
         postId:
           type: string
-          example: "60c72b2f9b1d8e3a5c8d5678"
+          description: ID del post al que pertenece la imagen
+          example: "664fe8cbfdf8bc730ff2537e"
+        imageUrl:
+          type: array
+          items:
+            type: string
+          example: ["uploads/imagen1.jpg", "uploads/imagen2.jpg"]
 
     Comment:
       type: object
@@ -1042,6 +1045,161 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+  /postimages:
+    get:
+      summary: Obtener todas las imágenes
+      tags:
+        - PostImages
+      responses:
+        "200":
+          description: Lista de imágenes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PostImage"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+    post:
+      summary: Crear nuevas imágenes para un post
+      tags:
+        - PostImages
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                postId:
+                  type: string
+                  example: "664fe8cbfdf8bc730ff2537e"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "201":
+          description: Imágenes creadas y post actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+
+        "400":
+          description: ID inválido o datos faltantes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+  /postimages/{id}:
+    put:
+      summary: Actualizar imagen de un post
+      tags:
+        - PostImages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la imagen a actualizar
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Imagen actualizada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Imagen actualizada correctamente"
+        "400":
+          description: ID inválido o datos faltantes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+
+    delete:
+      summary: Eliminar una imagen por ID
+      tags:
+        - PostImages
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la imagen a eliminar
+        - in: query
+          name: postId
+          required: true
+          schema:
+            type: string
+          description: ID del post que contiene la imagen
+      responses:
+        "200":
+          description: Imagen eliminada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Imagen eliminada correctamente"
+                  post:
+                    $ref: "#/components/schemas/Post"
+        "400":
+          description: ID inválido o datos faltantes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Error del servidor
           content:

@@ -14,7 +14,7 @@ const getFollowers = async (req, res) => {
       .populate({
         path: "follower",
         select: "followerId -followedId -_id",
-        populate: { path: "followerId", select:"userName" }
+        populate: { path: "followerId", select: "userName" },
       });
 
     if (!user) {
@@ -29,7 +29,7 @@ const getFollowers = async (req, res) => {
 
 const getFollowing = async (req, res) => {
   try {
-    const { userId } = req.params; 
+    const { userId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "ID inválido" });
@@ -40,7 +40,7 @@ const getFollowing = async (req, res) => {
       .populate({
         path: "followed",
         select: "followedId -followerId -_id",
-        populate: { path: "followedId", select:"userName" }
+        populate: { path: "followedId", select: "userName" },
       });
 
     if (!user) {
@@ -86,7 +86,10 @@ const createFollow = async (req, res) => {
 const deleteFollow = async (req, res) => {
   try {
     const { follower, followed } = req.params;
-    const follow = await Follow.findOneAndDelete({ followerId: follower, followedId: followed });
+    const follow = await Follow.findOneAndDelete({
+      followerId: follower,
+      followedId: followed,
+    });
 
     if (!follow) {
       return res.status(404).json({ message: "Solicitud Incorrecta" });
