@@ -25,17 +25,19 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Campo virtual para poblar los follower de este usuario
+// Usuarios que siguen al usuario del localField
 userSchema.virtual("follower", {
   ref: "Follow",
   localField: "_id",
-  foreignField: "users",
+  foreignField: "followedId",
+  justOne: false,
 });
-// Campo virtual para poblar los followed de este usuario
+// Usuarios a los que el localField sigue
 userSchema.virtual("followed", {
   ref: "Follow",
   localField: "_id",
-  foreignField: "users",
+  foreignField: "followerId",
+  justOne: false,
 });
 
 // Hacer que los virtuales se incluyan al convertir en JSON o en objeto
