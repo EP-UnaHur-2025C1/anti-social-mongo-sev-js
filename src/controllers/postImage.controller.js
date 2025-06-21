@@ -1,7 +1,6 @@
 const PostImage = require("../models/postImage");
 const Post = require("../models/post");
 const { saveImage, deleteImage } = require("../aditionalFunctions/image");
-const mongoose = require("mongoose");
 
 const getAllPostImages = async (req, res) => {
   try {
@@ -18,10 +17,6 @@ const createPostImages = async (req, res) => {
   try {
     const { postId } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
-
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post inexistente" });
@@ -34,9 +29,9 @@ const createPostImages = async (req, res) => {
       imageUrl: file.destination + file.originalname,
     }));
 
-    const createdImages = await PostImage.create(newImages);
-    post.images.push(createdImages.map((img) => img._id));
-    await post.save();
+    await PostImage.create(newImages) 
+    const idImages = await PostImage.find({postId}).select('_id')
+    await Post.updateOne({_id: postId}, {$push: {images: idImages}})
     res.status(201).json(post);
   } catch (e) {
     res
@@ -48,10 +43,6 @@ const createPostImages = async (req, res) => {
 const updatePostImage = async (req, res) => {
   try {
     const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
 
     const image = await PostImage.findById(id);
     deleteImage(image.imageUrl.toString()); // Borro la imagen anterior de la carpeta uploads
@@ -65,7 +56,7 @@ const updatePostImage = async (req, res) => {
     await post.save();
     res
       .status(201)
-      .json({ message: `Imagen actualizada correctamente ${image.imageUrl}` });
+      .json({ message: `Imagen actualizada correctamente` });
   } catch (e) {
     res
       .status(500)
@@ -76,10 +67,6 @@ const updatePostImage = async (req, res) => {
 const deleteById = async (req, res) => {
   try {
     const { postId, id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
 
     const oldImage = await PostImage.findOneAndDelete({ _id: id });
     const post = await Post.findById(postId);

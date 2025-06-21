@@ -122,6 +122,45 @@ components:
           format: date-time
           example: "2024-06-01T12:34:56.789Z"
 
+    Follow:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "684f283e8354d0b09c12ffc7"
+        followerId:
+          type: string
+          example: "684e0974c2aaaed45f3014a0"
+        followedId:
+          type: string
+          example: "64a8f0c9c3a2b5d6e4f12345"  
+
+    Follow-following:
+      type: object  
+      properties: 
+        _id:
+          type: string
+          example: "684e0974c2aaaed45f3014a0"
+        userName:
+          type: string 
+          example: "noname"
+        followed:
+          type: array
+          example: [{"followedId":{"_id":"64a8f0c9c3a2b5d6e4f12345","userName":"pepita","id":"64a8f0c9c3a2b5d6e4f12345"}}]
+
+    Follow-followers:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64a8f0c9c3a2b5d6e4f12345"
+        userName:
+          type: string 
+          example: "pepita"
+        follower:
+          type: array
+          example: [{"followerId":{"_id":"684e0974c2aaaed45f3014a0","userName":"noname","id":"684e0974c2aaaed45f3014a0"}}]
+
     ErrorResponse:
       type: object
       properties:
@@ -1162,25 +1201,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorServer"
-
+                $ref: "#/components/schemas/ErrorServer"      
+  /postimages/{postId}/{id}:
     delete:
       summary: Eliminar una imagen por ID
       tags:
         - PostImages
       parameters:
         - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: ID de la imagen a eliminar
-        - in: query
           name: postId
           required: true
           schema:
             type: string
           description: ID del post que contiene la imagen
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la imagen a eliminar
       responses:
         "200":
           description: Imagen eliminada correctamente
@@ -1206,3 +1245,175 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorServer"
+  
+  /follows/followers/{userId}:
+    get:
+      summary: Obtener todos los seguidores de un usuario
+      tags:
+        - Follow
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: ID del usuario a obtener los seguidores
+      
+      responses:
+        "200":
+          description: Usuario con su listado de seguidores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow-followers"
+        "400":
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Usuario inexistente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+
+  /follows/following/{userId}:
+    get:
+      summary: Obtener todos los usuarios seguidos por el usuario
+      tags:
+      - Follow
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: ID del usuario a obtener los seguidos
+      
+      responses:
+        "200":
+          description: Usuario con su listado de seguidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow-following"
+        "400":
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Usuario inexistente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+
+  /follows:
+    post:
+      summary: Crear la relación entre seguidor y seguido
+      tags:
+      - Follow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Follow"
+      responses:
+        "200":
+          description: Ninguna
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow"
+        "400":
+          description: Datos Erróneos, no puede seguirse a si mismo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Usuario inexistente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+
+  /follows/{follower}/{followed}:
+    delete:
+      summary: Eliminar la relación entre seguidor y seguido
+      tags:
+      - Follow
+      parameters:
+        - in: path
+          name: follower
+          required: true
+          schema:
+            type: string
+          description: ID del usuario seguidor
+        - in: path
+          name: followed
+          required: true
+          schema:
+            type: string
+          description: ID del usuario seguido
+
+      responses:
+        "200":
+          description: Se dejó de seguir al usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow"
+
+        "404":
+          description: Solicitud Incorrecta
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorServer"
+
+      

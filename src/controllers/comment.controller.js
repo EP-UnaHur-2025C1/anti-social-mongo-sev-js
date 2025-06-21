@@ -43,9 +43,6 @@ const getComments = async (req, res) => {
 const getCommentById = async (req, res) => {
   try {
     const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
 
     const comment = await Comment.findById(id).populate("userId", "userName");
     if (!comment) {
@@ -61,10 +58,7 @@ const getCommentById = async (req, res) => {
 const getCommentsByPost = async (req, res) => {
   try {
     const postId = req.params.id;
-    //verificar si el id tiene el formato correcto de mongoDB
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({ message: "ID de post inválido" });
-    }
+
     const fechaLimite = obtenerFechaLimite();
 
     const comments = await Comment.find({

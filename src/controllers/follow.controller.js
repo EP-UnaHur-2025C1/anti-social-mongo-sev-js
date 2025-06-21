@@ -1,15 +1,11 @@
 const Follow = require("../models/follow");
 const User = require("../models/user");
-const mongoose = require("mongoose");
 
 const getFollowers = async (req, res) => {
   try {
-    const { userId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
+    const { id } = req.params;
 
-    const user = await User.findById(userId)
+    const user = await User.findById(id)
       .select("userName")
       .populate({
         path: "follower",
@@ -29,13 +25,9 @@ const getFollowers = async (req, res) => {
 
 const getFollowing = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
-
-    const user = await User.findById(userId)
+    const user = await User.findById(id)
       .select("userName")
       .populate({
         path: "followed",

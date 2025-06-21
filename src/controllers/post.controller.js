@@ -18,9 +18,6 @@ const getPosts = async (req, res) => {
 const getPostById = async (req, res) => {
   try {
     const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
 
     const post = await Post.findById(id);
 
@@ -37,9 +34,7 @@ const getPostById = async (req, res) => {
 const getPostwithImagesTagsCommentsById = async (req, res) => {
   try {
     const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
+
     const data = await Post.findById(id)
       .select("-__v")
       .populate("tags", "name")
@@ -131,9 +126,7 @@ const createPost = async (req, res) => {
 const updatePost = async (req, res) => {
   try {
     const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
+
     const { description, userId } = req.body;
 
     if (!description || !userId) {
@@ -228,9 +221,6 @@ const addTagsToPost = async (req, res) => {
 const deleteById = async (req, res) => {
   try {
     const postId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
 
     const post = await Post.findById(postId);
     if (!post) {
@@ -248,12 +238,7 @@ const deleteById = async (req, res) => {
 const deletePostImage = async (req, res) => {
   try {
     const { id, imageId } = req.params;
-    if (
-      !mongoose.Types.ObjectId.isValid(id) ||
-      !mongoose.Types.ObjectId.isValid(imageId)
-    ) {
-      return res.status(400).json({ message: "ID inválido" });
-    }
+
     const deletedImage = await PostImage.findOneAndDelete({
       postId: id,
       _id: imageId,
