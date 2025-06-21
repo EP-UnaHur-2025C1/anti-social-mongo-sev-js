@@ -1,12 +1,33 @@
 const { Router } = require("express");
 const { postController } = require("../controllers");
+const { fileFilter } = require("../aditionalFunctions/image");
+const multer = require("multer");
 const validarObjectId = require('../middlewares/validatorObjectId');
 const router = Router();
 
-router.get("/", postController.getPosts);
+const upload = multer({
+  dest: "uploads/",
+  fileFilter,
+  limits: { fileSize: 1024 * 1024 * 4 },
+});
+//rutas get
+router.get("/full/:id", validarObjectId, postController.getPostwithImagesTagsCommentsById);
 router.get("/:id", validarObjectId, postController.getPostById);
-router.post("/", postController.createPost);
-router.put("/:id", validarObjectId, postController.updatePost);
-router.delete("/:id", validarObjectId,postController.deleteById);
+router.get("/", postController.getPosts);
+//post
+router.post("/", upload.array("images", 6), postController.createPost);
+
+//put
+router.put("/:id", validarObjectId, upload.array("images", 6), postController.updatePost);
+router.put(
+  "/:id/images", validarObjectId,
+  upload.array("images", 6),
+  postController.updatePostImagesById
+);
+//patch - agregar tags a post
+router.patch("/addTags/:id", validarObjectId, postController.addTagsToPost);
+//delete
+router.delete("/:id/:imageId", validarObjectId, postController.deletePostImage);
+router.delete("/:id", validarObjectId, postController.deleteById);
 
 module.exports = router;

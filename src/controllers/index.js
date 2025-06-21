@@ -5,13 +5,11 @@ const postImageController = require("./postImage.controller");
 const followController = require("./follow.controller");
 const commentController = require("./comment.controller");
 
-
-module.exports = { 
-    userController,
-    postController,
-    tagController,
-    postImageController,
-    followController,
-    commentController,
-    
+module.exports = {
+  userController,
+  postController,
+  tagController,
+  postImageController,
+  followController,
+  commentController,
 };

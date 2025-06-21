@@ -43,7 +43,8 @@ const getComments = async (req, res) => {
 const getCommentById = async (req, res) => {
   try {
     const id = req.params.id;
-    //eliminé validación de id, ahora la hace el middleware
+    //eliminé validación ahora lo hace le middleware
+
     const comment = await Comment.findById(id).populate("userId", "userName");
     if (!comment) {
       return res.status(404).json({ error: "Comentario no encontrado" });
@@ -58,7 +59,7 @@ const getCommentById = async (req, res) => {
 const getCommentsByPost = async (req, res) => {
   try {
     const postId = req.params.id;
-    //eliminé validación de id, ahora la hace el middleware
+     //eliminé validación ahora lo hace le middleware
     const fechaLimite = obtenerFechaLimite();
 
     const comments = await Comment.find({
@@ -106,10 +107,10 @@ const deleteComment = async (req, res) => {
 };
 
 module.exports = {
-    createComment,
-    getComments,
-    getCommentById,
-    getCommentsByPost,
-    updateComment,
-    deleteComment,
+  createComment,
+  getComments,
+  getCommentById,
+  getCommentsByPost,
+  updateComment,
+  deleteComment,
 };

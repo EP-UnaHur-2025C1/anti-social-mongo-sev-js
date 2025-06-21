@@ -7,6 +7,7 @@ const validarObjectId = require('../middlewares/validatorObjectId');
 
 
 const multer = require('multer')
+
 const upload = multer ({ dest: 'uploads/', fileFilter, limits: { fileSize: 1024 * 1024 * 4 }})
 
 router.get("/", 
@@ -18,14 +19,14 @@ router.post("/",
     postImageController.createPostImages
 );
 
-router.put("/:id",
-    upload.single('image'), validarObjectId,
+router.put("/:id", validarObjectId,
+    upload.single('image'),
     postImageController.updatePostImage
 );
 
-router.delete("/:id",
-    validarObjectId, postImageController.deleteById
+router.delete("/:id", validarObjectId,
+    postImageController.deleteById
 );
 
 
-module.exports =  router ;
+module.exports = router;

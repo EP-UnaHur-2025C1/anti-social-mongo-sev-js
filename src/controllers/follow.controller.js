@@ -1,15 +1,24 @@
-const { Follow, User } = require("../models");
+const Follow = require("../models/follow");
+const User = require("../models/user");
+const mongoose = require("mongoose");
 
 const getFollowers = async (req, res) => {
   try {
-    const { userId } = req.params; 
-    //eliminé validación de id, ahora la hace el middleware
+    const { userId } = req.params;
+    //eliminé validación del id ahora lo hace el middleware
 
-    const user = await User.findById(userId).select('userName').populate('followers');
+    const user = await User.findById(userId)
+      .select("userName")
+      .populate({
+        path: "follower",
+        select: "followerId -followedId -_id",
+        populate: { path: "followerId", select: "userName" },
+      });
+
     if (!user) {
       return res.status(404).json({ message: "Usuario inexistente" });
     }
-    res.status(200).json(user); 
+    res.status(200).json(user);
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: "Error interno en el servidor" });
@@ -18,10 +27,18 @@ const getFollowers = async (req, res) => {
 
 const getFollowing = async (req, res) => {
   try {
-    const { userId } = req.params; // id del usuario que queremos saber a quienes sigue
-    //eliminé validación de id, ahora la hace el middleware
+    const { userId } = req.params;
 
-    const user = await User.findById(userId).select('userName').populate('followed');
+    //eliminé validación del id ahora lo hace el middleware
+
+    const user = await User.findById(userId)
+      .select("userName")
+      .populate({
+        path: "followed",
+        select: "followedId -followerId -_id",
+        populate: { path: "followedId", select: "userName" },
+      });
+
     if (!user) {
       return res.status(404).json({ message: "Usuario inexistente" });
     }
@@ -54,7 +71,7 @@ const createFollow = async (req, res) => {
         .status(400)
         .json({ message: `Ya sigue al usuario ${followed.userName}` });
     }
-    const newFollow = await Follow.create({followerId, followedId});
+    const newFollow = await Follow.create({ followerId, followedId });
     res.status(201).json(newFollow);
   } catch (e) {
     console.error(e);
@@ -65,15 +82,14 @@ const createFollow = async (req, res) => {
 const deleteFollow = async (req, res) => {
   try {
     const { follower, followed } = req.params;
-    const follow = await Follow.findOne({ followerId: follower, followedId: followed });
-    const idFollower = await User.findOne({ followerId: follower}).select('_id');
-    const idFollowed = await User.findOne({ followedId: followed}).select('_id');
+    const follow = await Follow.findOneAndDelete({
+      followerId: follower,
+      followedId: followed,
+    });
 
     if (!follow) {
       return res.status(404).json({ message: "Solicitud Incorrecta" });
     }
-    follow.users.pull({idFollower, idFollowed})
-    await follow.save();
     res.status(200).json({ message: "Se dejó de seguir al usuario" });
   } catch (e) {
     console.error(e);

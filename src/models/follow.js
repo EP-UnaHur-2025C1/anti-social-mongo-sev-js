@@ -13,11 +13,6 @@ const followSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "followedId es requerido"],
     },
-    users: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    }]
   },
   {
     collection: "follows",
@@ -25,4 +20,4 @@ const followSchema = new mongoose.Schema(
 );
 
 const Follow = mongoose.model("Follow", followSchema);
-module.exports =  Follow ;
+module.exports = Follow;

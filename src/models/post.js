@@ -24,6 +24,12 @@ const postSchema = new mongoose.Schema(
         ref: "Tag",
       },
     ],
+    images: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "PostImage",
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -33,10 +39,17 @@ const postSchema = new mongoose.Schema(
     collection: "posts",
   }
 );
+//virtual para poder recibir muchos comentarios
+postSchema.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "postId",
+  justOne: false,
+});
 
 //virtuals para relación n:m entre post-tag
 postSchema.set("toJSON", { virtuals: true });
 postSchema.set("toObject", { virtuals: true });
 
 const Post = mongoose.model("Post", postSchema);
-module.exports = Post ;
+module.exports = Post;

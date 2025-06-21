@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", tagController.getTags);
 router.post("/", tagController.createTag);
-router.put("/:id", validarObjectId, tagController.updateTag);
+router.put("/:id",validarObjectId, tagController.updateTag);
 router.delete("/:id", validarObjectId, tagController.deleteById);
 
 module.exports = router;
