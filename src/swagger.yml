@@ -1246,14 +1246,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorServer"
   
-  /follows/followers/{userId}:
+  /follows/followers/{id}:
     get:
       summary: Obtener todos los seguidores de un usuario
       tags:
         - Follow
       parameters:
         - in: path
-          name: userId
+          name: id
           required: true
           schema:
             type: string
@@ -1289,14 +1289,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorServer"
 
-  /follows/following/{userId}:
+  /follows/following/{id}:
     get:
       summary: Obtener todos los usuarios seguidos por el usuario
       tags:
       - Follow
       parameters:
         - in: path
-          name: userId
+          name: id
           required: true
           schema:
             type: string
