@@ -45,10 +45,13 @@ const updatePostImage = async (req, res) => {
     const { id } = req.params;
 
     const image = await PostImage.findById(id);
-    deleteImage(image.imageUrl.toString()); // Borro la imagen anterior de la carpeta uploads
-    image.imageUrl = req.file.destination + req.file.originalname; // Actualizo la url por la nueva
+    // Borro la imagen anterior de la carpeta uploads, la paso a string porque el campo imageurl está guardado como array
+    deleteImage(image.imageUrl.toString());
+    // Actualizo la url por la nueva
+    image.imageUrl = req.file.destination + req.file.originalname; 
     image.save();
-    saveImage(req.file); // Guardo la nueva imagen en la carpeta uploads
+   
+    saveImage(req.file);  // Guardo la nueva imagen en la carpeta uploads
     const post = await Post.findById(image.postId);
 
     post.images.pull(id); // Quito la imagen anterior del array en post
@@ -68,10 +71,10 @@ const deleteById = async (req, res) => {
   try {
     const { postId, id } = req.params;
 
-    const oldImage = await PostImage.findOneAndDelete({ _id: id });
+    const oldImage = await PostImage.findOneAndDelete({ _id: id });  // Borro la imagen y la almaceno en la constante
     const post = await Post.findById(postId);
-    deleteImage(oldImage.imageUrl.toString());
-    post.images.pull(id);
+    deleteImage(oldImage.imageUrl.toString());  // Quito la imagen de la carpeta uploads usando la url de la imagen borrada
+    post.images.pull(id);  // Quito la imagen del array de imagenes en post
     await post.save();
     res.status(200).json({ message: "Imagen eliminada correctamente", post });
   } catch (e) {

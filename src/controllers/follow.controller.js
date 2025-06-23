@@ -9,8 +9,8 @@ const getFollowers = async (req, res) => {
       .select("userName")
       .populate({
         path: "follower",
-        select: "followerId -followedId -_id",
-        populate: { path: "followerId", select: "userName" },
+        select: "followerId -followedId -_id", // Traigo sólo los usuarios que lo siguen
+        populate: { path: "followerId", select: "userName" }, // Selecciono el userName del usuario
       });
 
     if (!user) {
@@ -30,9 +30,9 @@ const getFollowing = async (req, res) => {
     const user = await User.findById(id)
       .select("userName")
       .populate({
-        path: "followed",
-        select: "followedId -followerId -_id",
-        populate: { path: "followedId", select: "userName" },
+        path: "followed",  
+        select: "followedId -followerId -_id", // Traigo sólo los usuarios que sigue
+        populate: { path: "followedId", select: "userName" }, // Selecciono el userName del usuario
       });
 
     if (!user) {

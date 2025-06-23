@@ -87,7 +87,7 @@ const createPost = async (req, res) => {
 
     // Si vienen archivos (imágenes) en req.files, guardarlos y crear registros
     if (req.files && req.files.length > 0) {
-      // Guardar las imágenes físicamente (tu función personalizada)
+      // Guardar las imágenes en la carpeta uploads
       req.files.forEach((file) => saveImage(file));
 
       // Crear documentos PostImage referenciando al post
@@ -144,7 +144,7 @@ const updatePost = async (req, res) => {
     if (req.files && req.files.length > 0) {
       //guarda las imagenes nuevas que se van a agregar
       req.files.forEach((file) => saveImage(file));
-      //borrar todas las imagenes que el post tenia
+      //borrar todas las imagenes que tenía el post
       await PostImage.deleteMany({ postId: id });
       //crea una nueva collecion con las imagenes nuevas
       const postImages = req.files.map((file) => ({

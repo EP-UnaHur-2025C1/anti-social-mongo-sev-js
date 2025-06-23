@@ -1,8 +1,6 @@
 const Comment = require("../models/comment");
 const { obtenerFechaLimite } = require("../aditionalFunctions/comment");
 
-//crear un nuevo comentario ok
-
 const createComment = async (req, res) => {
   try {
     //la fecha de creacion se requiere para poder crear comments con fechas
@@ -21,8 +19,7 @@ const createComment = async (req, res) => {
   }
 };
 
-//Obtener todos los comentarios que no superen la fecha limite -ok
-
+// Obtener todos los comentarios que no superen la fecha limite 
 const getComments = async (req, res) => {
   try {
     const fechaLimite = obtenerFechaLimite();
@@ -36,7 +33,7 @@ const getComments = async (req, res) => {
   }
 };
 
-//Obtener un comentario por id - lo trae aunque sea antigua ok
+// Obtener un comentario por id - lo trae aunque sea antiguo 
 const getCommentById = async (req, res) => {
   try {
     const id = req.params.id;
@@ -72,8 +69,6 @@ const getCommentsByPost = async (req, res) => {
   }
 };
 
-//Actualizar un comentario
-
 const updateComment = async (req, res) => {
   try {
     const updated = await Comment.findByIdAndUpdate(req.params.id, req.body, {
@@ -87,8 +82,6 @@ const updateComment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-//Eliminar comentario
 
 const deleteComment = async (req, res) => {
   try {
