@@ -135,6 +135,19 @@ components:
           type: string
           example: "64a8f0c9c3a2b5d6e4f12345"  
 
+    FollowCreate:
+      type: object
+      properties:
+        followerId:
+          type: string
+          example: "684e0974c2aaaed45f3014a0"
+        followedId:
+          type: string
+          example: "64a8f0c9c3a2b5d6e4f12345"
+      required:
+        - followerId
+        - followedId
+  
     Follow-following:
       type: object  
       properties: 
@@ -1342,9 +1355,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Follow"
+              $ref: "#/components/schemas/FollowCreate"
       responses:
-        "200":
+        "201":
           description: Ninguna
           content:
             application/json:
