@@ -114,9 +114,7 @@ components:
         text:
           type: string
           example: "Este es un comentario"
-        visible:
-          type: boolean
-          example: true
+
         createdAt:
           type: string
           format: date-time
@@ -133,7 +131,7 @@ components:
           example: "684e0974c2aaaed45f3014a0"
         followedId:
           type: string
-          example: "64a8f0c9c3a2b5d6e4f12345"  
+          example: "64a8f0c9c3a2b5d6e4f12345"
 
     FollowCreate:
       type: object
@@ -147,19 +145,29 @@ components:
       required:
         - followerId
         - followedId
-  
+
     Follow-following:
-      type: object  
-      properties: 
+      type: object
+      properties:
         _id:
           type: string
           example: "684e0974c2aaaed45f3014a0"
         userName:
-          type: string 
+          type: string
           example: "noname"
         followed:
           type: array
-          example: [{"followedId":{"_id":"64a8f0c9c3a2b5d6e4f12345","userName":"pepita","id":"64a8f0c9c3a2b5d6e4f12345"}}]
+          example:
+            [
+              {
+                "followedId":
+                  {
+                    "_id": "64a8f0c9c3a2b5d6e4f12345",
+                    "userName": "pepita",
+                    "id": "64a8f0c9c3a2b5d6e4f12345",
+                  },
+              },
+            ]
 
     Follow-followers:
       type: object
@@ -168,11 +176,21 @@ components:
           type: string
           example: "64a8f0c9c3a2b5d6e4f12345"
         userName:
-          type: string 
+          type: string
           example: "pepita"
         follower:
           type: array
-          example: [{"followerId":{"_id":"684e0974c2aaaed45f3014a0","userName":"noname","id":"684e0974c2aaaed45f3014a0"}}]
+          example:
+            [
+              {
+                "followerId":
+                  {
+                    "_id": "684e0974c2aaaed45f3014a0",
+                    "userName": "noname",
+                    "id": "684e0974c2aaaed45f3014a0",
+                  },
+              },
+            ]
 
     ErrorResponse:
       type: object
@@ -869,9 +887,7 @@ paths:
                 text:
                   type: string
                   example: "Comentario editado"
-                visible:
-                  type: boolean
-                  example: true
+
       responses:
         "200":
           description: Comentario actualizado
@@ -1214,7 +1230,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorServer"      
+                $ref: "#/components/schemas/ErrorServer"
   /postimages/{postId}/{id}:
     delete:
       summary: Eliminar una imagen por ID
@@ -1258,7 +1274,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorServer"
-  
+
   /follows/followers/{id}:
     get:
       summary: Obtener todos los seguidores de un usuario
@@ -1271,7 +1287,7 @@ paths:
           schema:
             type: string
           description: ID del usuario a obtener los seguidores
-      
+
       responses:
         "200":
           description: Usuario con su listado de seguidores
@@ -1306,7 +1322,7 @@ paths:
     get:
       summary: Obtener todos los usuarios seguidos por el usuario
       tags:
-      - Follow
+        - Follow
       parameters:
         - in: path
           name: id
@@ -1314,7 +1330,7 @@ paths:
           schema:
             type: string
           description: ID del usuario a obtener los seguidos
-      
+
       responses:
         "200":
           description: Usuario con su listado de seguidos
@@ -1349,7 +1365,7 @@ paths:
     post:
       summary: Crear la relación entre seguidor y seguido
       tags:
-      - Follow
+        - Follow
       requestBody:
         required: true
         content:
@@ -1390,7 +1406,7 @@ paths:
     delete:
       summary: Eliminar la relación entre seguidor y seguido
       tags:
-      - Follow
+        - Follow
       parameters:
         - in: path
           name: follower
@@ -1428,5 +1444,3 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorServer"
-
-      

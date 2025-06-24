@@ -3,6 +3,7 @@ const Comment = require("../models/comment");
 const PostImage = require("../models/postImage");
 const Tag = require("../models/tag");
 const { saveImage } = require("../aditionalFunctions/image");
+const { obtenerFechaLimite } = require("../aditionalFunctions/comment");
 
 const getPosts = async (req, res) => {
   try {
@@ -33,6 +34,7 @@ const getPostById = async (req, res) => {
 const getPostwithImagesTagsCommentsById = async (req, res) => {
   try {
     const id = req.params.id;
+    const fechaLimite = obtenerFechaLimite();
 
     const data = await Post.findById(id)
       .select("-__v")
@@ -41,10 +43,10 @@ const getPostwithImagesTagsCommentsById = async (req, res) => {
       .populate("userId", "userName email ")
       .populate({
         path: "comments",
-        select: "text userId",
+        match: { createdAt: { $gte: fechaLimite } },
+        select: "text userId createdAt",
         populate: { path: "userId", select: "userName" },
-      })
-      .lean();
+      });
 
     res.status(200).json(data);
   } catch (e) {

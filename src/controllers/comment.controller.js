@@ -19,12 +19,11 @@ const createComment = async (req, res) => {
   }
 };
 
-// Obtener todos los comentarios que no superen la fecha limite 
+// Obtener todos los comentarios que no superen la fecha limite
 const getComments = async (req, res) => {
   try {
     const fechaLimite = obtenerFechaLimite();
     const comments = await Comment.find({
-      visible: true,
       createdAt: { $gte: fechaLimite },
     });
     res.status(200).json(comments);
@@ -33,14 +32,17 @@ const getComments = async (req, res) => {
   }
 };
 
-// Obtener un comentario por id - lo trae aunque sea antiguo 
+// Obtener un comentario por id - lo trae aunque sea antiguo
 const getCommentById = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const comment = await Comment.findById(id).populate("userId", "userName");
+    const comment = await Comment.findById(id);
     if (!comment) {
       return res.status(404).json({ error: "Comentario no encontrado" });
+    }
+    if (comment.userId) {
+      await comment.populate("userId", "userName");
     }
     res.status(200).json(comment);
   } catch (error) {
@@ -48,7 +50,7 @@ const getCommentById = async (req, res) => {
   }
 };
 
-// Obtener comentarios de un post (solo los visibles)
+// Obtener comentarios de un post (solo los que no superen la fecha limite)
 const getCommentsByPost = async (req, res) => {
   try {
     const postId = req.params.id;
@@ -57,8 +59,7 @@ const getCommentsByPost = async (req, res) => {
 
     const comments = await Comment.find({
       postId,
-      visible: true,
-      //$gte greater than or equal -mayor o igual que en mongoDB
+
       createdAt: { $gte: fechaLimite },
     }).sort({
       createdAt: -1,
