@@ -2,7 +2,8 @@ const express = require("express");
 const conectarDB = require("./config/db");
 const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
-const swaggerDocument = YAML.load("./src/swagger.yml");
+const path = require('path');
+const swaggerDoc = YAML.load(path.join(__dirname, './docs/swagger.yml'));
 require("dotenv").config();
 
 const app = express();
@@ -29,7 +30,7 @@ app.use("/postimages", postImageRoute);
 app.use("/follows", followRoute);
 app.use("/comments", commentRoute);
 
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
